@@ -13,14 +13,14 @@ sep = '/'
 mimedic = [
     ('.html', 'text/html'),
     ('.htm', 'text/html'),
-    ('.js', 'application/javascript'),
-    ('.css', 'text/css'),
+    # ('.js', 'application/javascript'),
+    # ('.css', 'text/css'),
     ('.json', 'application/json'),
-    ('.png', 'image/png'),
-    ('.jpg', 'image/jpeg'),
-    ('.gif', 'image/gif'),
-    ('.txt', 'text/plain'),
-    ('.avi', 'video/x-msvideo'),
+    # ('.png', 'image/png'),
+    # ('.jpg', 'image/jpeg'),
+    # ('.gif', 'image/gif'),
+    # ('.txt', 'text/plain'),
+    # ('.avi', 'video/x-msvideo'),
 ]
 
 
@@ -33,13 +33,15 @@ class testHTTPServer_RequestHandler(BaseHTTPRequestHandler):
 
         if filepath.endswith('/'):
             filepath += 'index.html'
+        ## 根据文件类型决定发送与否
         filename, fileext = path.splitext(filepath)
         for e in mimedic:
             if e[0] == fileext:
                 mimetype = e[1]
                 sendReply = True
+                break
 
-        if sendReply == True:
+        if sendReply:
             try:
                 with open(path.realpath(curdir + sep + filepath), 'rb') as f:
                     content = f.read()

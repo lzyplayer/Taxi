@@ -3,6 +3,8 @@
 # @Author   : vickylzy
 
 import json
+# import json2table
+
 
 
 def json_to_dict():
@@ -16,4 +18,24 @@ def json_to_dict():
 
 
 if __name__ == "__main__":
-    json_to_dict()
+
+    content='''
+dasdjiahdshfa
+asdasdasdad
+asd
+da
+'''.format('/')
+
+    # paths = {
+    #     '/foo': {'status': 200},
+    #     '/bar': {'status': 302},
+    #     '/baz': {'status': 404},
+    #     '/qux': {'status': 500}
+    # }
+
+    # # json_to_dict()
+    # line = "127.0.0.1"
+    # # line = (line, 8000)
+    # line=line+':8080'
+    print(content)
+    print(type(content))
