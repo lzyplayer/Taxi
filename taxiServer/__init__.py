@@ -25,9 +25,10 @@ mimedic = [
 
 
 class testHTTPServer_RequestHandler(BaseHTTPRequestHandler):
+
     # GET
     def do_GET(self):
-        sendReply = False
+
         querypath = urlparse(self.path)
         filepath, query = querypath.path, querypath.query
 
@@ -40,17 +41,15 @@ class testHTTPServer_RequestHandler(BaseHTTPRequestHandler):
                 mimetype = e[1]
                 sendReply = True
                 break
-
-        if sendReply:
-            try:
-                with open(path.realpath(curdir + sep + filepath), 'rb') as f:
-                    content = f.read()
-                    self.send_response(200)
-                    self.send_header('Content-type', mimetype)
-                    self.end_headers()
-                    self.wfile.write(content)
-            except IOError:
-                self.send_error(404, 'File Not Found: %s' % self.path)
+        try:
+            with open(path.realpath(curdir + sep + filepath), 'rb') as f:
+                content = f.read()
+                self.send_response(200)
+                self.send_header('Content-type', mimetype)
+                self.end_headers()
+                self.wfile.write(content)
+        except IOError:
+            self.send_error(404, 'File Not Found: %s' % self.path)
 
 
 def run():

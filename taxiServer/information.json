@@ -1,1 +1,9 @@
-{"carSpeed":38,"car_name":"pinoeer","route":[{"routeS":1,"routeD":2},{"routeS":3,"routeD":4}]}
+{ "is_start_nav": false,
+  "is_arrive_start": false,
+  "is_in_vehicle": false,
+  "is_reach_target": false,
+  "start_position": [1.23, 1.23],
+  "target_position": [1.23, 1.23],
+  "current_position": [1.23, 1.23],
+  "routine": [[1.23,1.23],[1.23,1.23]]
+}
