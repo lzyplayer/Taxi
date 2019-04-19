@@ -1,1 +1,1 @@
-{"is_start_nav": false, "is_arrive_start": false, "is_in_vehicle": false, "is_reach_target": true, "start_position": [36], "target_position": [345], "current_position": [2, 27], "routine": [[1.23, 1.23], [1.23, 1.23]]}
+{"is_start_nav": false, "is_arrive_start": false, "is_in_vehicle": false, "is_reach_target": false, "start_position": [-1.0, -1.0], "target_position": [6.0, 6.0], "current_position": [4.0, 5.0], "routine": [[1, 1], [2, 2], [3, 3]]}

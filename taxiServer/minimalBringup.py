@@ -15,7 +15,7 @@ cur_dir = path.dirname(path.realpath(__file__))
 # { "is_start_nav": bool,                user control
 #   "is_arrive_start": bool,            taxi control
 #   "is_in_vehicle": bool,              user control
-#   "is_reach_target": bool,            taxi control
+#   "is_reach_target": bool,            taxi(to false)/user(to true) control
 #   "start_position": [float, float],   user control
 #   "target_position": [float, float],      user control
 #   "current_position": [float, float],     taxi control
@@ -28,14 +28,13 @@ class TaxiHttpServerRequestHandler(BaseHTTPRequestHandler):
     # GET
     def do_GET(self):
         # 当get请求时返回当前最新订单信息
-        # querypath = urlparse(self.path)
-        # filepath, query = querypath.path, querypath.query
+
         logging.info("GET request,Path: %s", str(self.path))
         try:
             with open(path.realpath(cur_dir + '/information.json'), 'r') as f:
                 # data_taxi = json.load(f)
                 data_taxi = f.read()
-                content = '<!DOCTYPE html><html lang="en"><head><meta charset="UTF-a8"><title>Title</title>' \
+                content = '<!DOCTYPE html><html lang="en"><head><meta charset="UTF-a8"><title>Xian Jiao Tong pioneer taxi Serverce</title>' \
                           '</head><body>hello</body></html>'
                 data_content = content.replace('hello', json2html.convert(data_taxi))
                 self.send_response(200)
@@ -52,7 +51,9 @@ class TaxiHttpServerRequestHandler(BaseHTTPRequestHandler):
         try:
             get_data = self.rfile.read(int(self.headers['Content-Length']))
             got_raw_json = get_data.decode('UTF-8').replace('\\', '')
-            got_dict = json.loads(got_raw_json[1:-1])
+            start_pos = got_raw_json.find('{')
+            end_pos = got_raw_json.find('}')
+            got_dict = json.loads(got_raw_json[start_pos:end_pos+1])#[1:-1]
             sender, trim_dict = check_sender(got_dict)
         except Exception:
             self.send_error(403, 'json sent is not in right format!')
@@ -87,12 +88,16 @@ def check_sender(send_in_dict):
         del send_in_dict["target_position"]
         del send_in_dict["is_start_nav"]
         del send_in_dict["is_in_vehicle"]
+        if not send_in_dict["is_reach_target"]:
+            del send_in_dict["is_reach_target"]
         return 'taxi', send_in_dict
     elif not send_in_dict["current_position"] and not send_in_dict["routine"]:
         del send_in_dict["current_position"]
         del send_in_dict["routine"]
         del send_in_dict["is_arrive_start"]
-        del send_in_dict["is_reach_target"]
+        if send_in_dict["is_reach_target"]:
+            del send_in_dict["is_reach_target"]
+        # del send_in_dict["is_reach_target"]
         return 'user', send_in_dict
 
 
