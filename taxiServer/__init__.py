@@ -50,6 +50,9 @@ class testHTTPServer_RequestHandler(BaseHTTPRequestHandler):
             except IOError:
                 self.send_error(404, 'File Not Found: %s' % self.path)
 
+    # def do_POST(self):
+
+
 
 def run():
     port = 8000
