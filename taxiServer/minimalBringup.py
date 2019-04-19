@@ -15,7 +15,7 @@ cur_dir = path.dirname(path.realpath(__file__))
 # { "is_start_nav": bool,                user control
 #   "is_arrive_start": bool,            taxi control
 #   "is_in_vehicle": bool,              user control
-#   "is_reach_target": bool,            taxi control
+#   "is_reach_target": bool,            taxi(to false)/user(to true) control
 #   "start_position": [float, float],   user control
 #   "target_position": [float, float],      user control
 #   "current_position": [float, float],     taxi control
