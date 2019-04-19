@@ -20,10 +20,10 @@ if __name__ == '__main__':
                 '"is_start_nav": false,' \
                 '"is_arrive_start": false,' \
                 '"is_in_vehicle": false,' \
-                '"is_reach_target": false,' \
-                '"start_position": [1.23, 1.23],' \
-                '"target_position": [1.23, 1.23],' \
-                '"current_position": [1.23, 1.23],' \
+                '"is_reach_target": true,' \
+                '"start_position": [],' \
+                '"target_position": [],' \
+                '"current_position": [2,27],' \
                 '"routine": [[1.23,1.23],[1.23,1.23]]' \
                 '}'
     a_client = httpClient('http://127.0.0.1:8080', temp_json)

@@ -4,7 +4,6 @@
 
 import json
 
-
 # import json2table
 
 
@@ -18,8 +17,16 @@ def json_to_dict():
 
 
 if __name__ == "__main__":
-    a_list = [[12, 15], [14, 15]]
+    with open('./information.json', 'r') as f:
+        # data_taxi = json.load(f)
+        data_taxi = f.read()
+        data_content = json.loads(data_taxi)
 
+
+    # a_list = [[12, 15], [14, 15]]
+    if not data_content['start_position'] and not data_content['target_position']:
+        print(data_content)
+        print(type(data_content))
     #     content='''
     # dasdjiahdshfa
     # asdasdasdad
@@ -34,9 +41,9 @@ if __name__ == "__main__":
     #     '/qux': {'status': 500}
     # }
 
-    get_dict = json_to_dict()
+    # get_dict = json_to_dict()
     # line = "127.0.0.1"
     # # line = (line, 8000)
     # line=line+':8080'
-    print(get_dict)
-    print(type(get_dict))
+    # print(data_content)
+    # print(type(data_content))
