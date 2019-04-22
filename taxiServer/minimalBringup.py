@@ -34,7 +34,8 @@ class TaxiHttpServerRequestHandler(BaseHTTPRequestHandler):
             with open(path.realpath(cur_dir + '/information.json'), 'r') as f:
                 # data_taxi = json.load(f)
                 data_taxi = f.read()
-                content = '<!DOCTYPE html><html lang="en"><head><meta charset="UTF-a8"><title>Xian Jiao Tong pioneer taxi Serverce</title>' \
+                content = '<!DOCTYPE html><html lang="en"><head><meta charset="UTF-a8"><title>Xian Jiao Tong ' \
+                          'pioneer taxi Service</title>' \
                           '</head><body>hello</body></html>'
                 data_content = content.replace('hello', json2html.convert(data_taxi))
                 self.send_response(200)
@@ -99,6 +100,7 @@ def check_sender(send_in_dict):
             del send_in_dict["is_reach_target"]
         # del send_in_dict["is_reach_target"]
         return 'user', send_in_dict
+    raise Exception
 
 
 def run(server_class=TaxiHttpServerRequestHandler, server_address='', port=8000):
@@ -119,7 +121,7 @@ def run(server_class=TaxiHttpServerRequestHandler, server_address='', port=8000)
 if __name__ == '__main__':
     # start service
     net_address = ''
-    net_port = 8080
+    net_port = 31845
     run(server_address=net_address, port=net_port)
 
 # def __init__(self):
