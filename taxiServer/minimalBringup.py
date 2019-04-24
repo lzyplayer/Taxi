@@ -65,7 +65,7 @@ class TaxiHttpServerRequestHandler(BaseHTTPRequestHandler):
                     f.seek(0)
                     f.truncate()
                     data_taxi.update(trim_dict)
-                    json.dump(data_taxi, f)
+                    json.dump(data_taxi, f, sort_keys=True)
                     logging.info("Update a Post from %s", sender)
                     self.send_response(200)
                     self.send_header('Content-type', 'text/html')

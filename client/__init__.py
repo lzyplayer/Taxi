@@ -26,6 +26,6 @@ if __name__ == '__main__':
                 '"current_position": [2,27],' \
                 '"routine": [[1.23,1.23],[1.23,1.23]]' \
                 '}'
-    a_client = httpClient('http://127.0.0.1:8080', temp_json)
+    a_client = httpClient('http://39.106.228.144:31845', temp_json)
     a_client.do_request()
     print(a_client.got_json)
