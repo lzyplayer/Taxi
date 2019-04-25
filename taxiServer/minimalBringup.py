@@ -9,7 +9,6 @@ from os import path
 
 cur_dir = path.dirname(path.realpath(__file__))
 
-
 # encoding data format for transform
 #
 # { "is_start_nav": bool,                user control
@@ -22,28 +21,43 @@ cur_dir = path.dirname(path.realpath(__file__))
 #   "routine": [[float,float],...,[float,float]]    taxi control
 # }
 
+message_tpye = [('/', 'text/html'),
+                ('/favicon.ico', 'image/x-icon')]
+
 
 class TaxiHttpServerRequestHandler(BaseHTTPRequestHandler):
 
     # GET
     def do_GET(self):
         # 当get请求时返回当前最新订单信息
-
+        acquire_path = self.path
+        response_type = ''
+        for atype in message_tpye:
+            if acquire_path == atype[0]:
+                response_type = atype[1]
+                break
+        if acquire_path == '/':
+            acquire_path = acquire_path + 'information.json'
         logging.info("GET request,Path: %s", str(self.path))
         try:
-            with open(path.realpath(cur_dir + '/information.json'), 'r') as f:
-                # data_taxi = json.load(f)
-                data_taxi = f.read()
-                content = '<!DOCTYPE html><html lang="en"><head><meta charset="UTF-a8"><title>Xian Jiao Tong ' \
-                          'pioneer taxi Service</title>' \
-                          '</head><body>hello</body></html>'
-                data_content = content.replace('hello', json2html.convert(data_taxi))
-                self.send_response(200)
-                self.send_header('Content-type', 'text/html')
-                self.end_headers()
-                self.wfile.write(bytes(data_content, 'UTF-8'))
+            if response_type == '':
+                raise IOError
+            self.send_response(200)
+            self.send_header('Content-type', response_type)
+            self.end_headers()
+            if acquire_path == '/information.json':
+                with open('.' + acquire_path, 'r') as f:
+                    data_taxi = f.read()
+                    content = '<!DOCTYPE html><html lang="en"><head><meta charset="UTF-a8"><title>Xian Jiao Tong ' \
+                              'pioneer taxi Service</title>' \
+                              '</head><body>hello</body></html>'
+                    data_content = content.replace('hello', json2html.convert(data_taxi))
+                    self.wfile.write(bytes(data_content, 'UTF-8'))
+            elif acquire_path == '/favicon.ico':
+                with open('.' + acquire_path, 'rb') as f:
+                    self.wfile.write(f.read())
         except IOError:
-            self.send_error(404, 'json File Not Found: %s' % self.path)
+            self.send_error(404, ' File Not Found: %s' % acquire_path)
 
     def do_POST(self):
         # 解析传入json
@@ -54,7 +68,7 @@ class TaxiHttpServerRequestHandler(BaseHTTPRequestHandler):
             got_raw_json = get_data.decode('UTF-8').replace('\\', '')
             start_pos = got_raw_json.find('{')
             end_pos = got_raw_json.find('}')
-            got_dict = json.loads(got_raw_json[start_pos:end_pos+1])#[1:-1]
+            got_dict = json.loads(got_raw_json[start_pos:end_pos + 1])  # [1:-1]
             sender, trim_dict = check_sender(got_dict)
         except Exception:
             self.send_error(403, 'json sent is not in right format!')

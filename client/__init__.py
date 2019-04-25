@@ -17,15 +17,15 @@ class httpClient:
 
 if __name__ == '__main__':
     temp_json = '{ ' \
-                '"is_start_nav": false,' \
-                '"is_arrive_start": false,' \
                 '"is_in_vehicle": false,' \
-                '"is_reach_target": true,' \
+                '"is_reach_target": false,' \
+                '"is_start_nav": false,' \
                 '"start_position": [],' \
                 '"target_position": [],' \
-                '"current_position": [2,27],' \
+                '"current_position": [34],' \
+                '"is_arrive_start": false,' \
                 '"routine": [[1.23,1.23],[1.23,1.23]]' \
                 '}'
-    a_client = httpClient('http://39.106.228.144:31845', temp_json)
+    a_client = httpClient('http://127.0.0.1:31845', temp_json)
     a_client.do_request()
     print(a_client.got_json)
