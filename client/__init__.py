@@ -12,20 +12,15 @@ class httpClient:
 
     def do_request(self):
         received_response = requests.post(self.url, json=self.json_data)
+        # received_response = requests.get(self.url)
         self.got_json = received_response.json()
 
 
 if __name__ == '__main__':
-    temp_json = '{ ' \
-                '"is_in_vehicle": false,' \
-                '"is_reach_target": false,' \
-                '"is_start_nav": false,' \
-                '"start_position": [],' \
-                '"target_position": [],' \
-                '"current_position": [34],' \
-                '"is_arrive_start": false,' \
-                '"routine": [[1.23,1.23],[1.23,1.23]]' \
-                '}'
+    temp_json = '{"current_position": [], "is_arrive_start": false, "is_in_vehicle": false,"is_reach_target": false,' \
+                '"is_start_nav": false,  "routine": [],"start_position": [], "target_position": [],"velocity":0,' \
+                '"gas":0,"pressure_left_front":0,"pressure_right_front":0,"pressure_left_behind":0,' \
+                '"pressure_right_behind":0,"camera_status":false, "lidar_status":false,"ibeo_status":false} '
     a_client = httpClient('http://127.0.0.1:31845', temp_json)
     a_client.do_request()
     print(a_client.got_json)
