@@ -41,7 +41,6 @@ message_type = [('/', 'text/html'),
 
 
 class TaxiHttpServerRequestHandler(BaseHTTPRequestHandler):
-
     # GET
     def do_GET(self):
         # 当get请求时返回当前最新订单信息
@@ -71,7 +70,7 @@ class TaxiHttpServerRequestHandler(BaseHTTPRequestHandler):
                 with open('.' + acquire_path, 'rb') as f:
                     self.wfile.write(f.read())
             elif acquire_path == '/information.json':
-                self.wfile.write(json.dumps(freshJson))
+                self.wfile.write(bytes(json.dumps(freshJson), 'UTF-8'))
         except IOError:
             self.send_error(404, ' File Not Found: %s' % acquire_path)
 
