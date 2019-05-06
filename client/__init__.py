@@ -22,5 +22,6 @@ if __name__ == '__main__':
                 '"gas":0,"pressure_left_front":0,"pressure_right_front":0,"pressure_left_behind":0,' \
                 '"pressure_right_behind":0,"camera_status":false, "lidar_status":false,"ibeo_status":false} '
     a_client = httpClient('http://127.0.0.1:31845', temp_json)
-    a_client.do_request()
-    print(a_client.got_json)
+    while True:
+        a_client.do_request()
+        print(a_client.got_json)

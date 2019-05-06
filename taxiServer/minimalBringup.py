@@ -3,9 +3,11 @@
 # @Author   : vickylzy
 import logging
 import json
+import threading
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from json2html import *
 from os import path
+from socketserver import ThreadingMixIn
 
 cur_dir = path.dirname(path.realpath(__file__))
 
@@ -29,9 +31,11 @@ cur_dir = path.dirname(path.realpath(__file__))
 #   "lidar_status": bool                taxi control
 #   "ibeo_status": bool                  taxi control
 # }
+dataLock = threading.Lock()
+with open('./information.json', 'r') as glaFile:
+    freshJson = json.load(glaFile)
 
-
-message_tpye = [('/', 'text/html'),
+message_type = [('/', 'text/html'),
                 ('/favicon.ico', 'image/x-icon'),
                 ('/information.json', 'text/html')]
 
@@ -43,7 +47,7 @@ class TaxiHttpServerRequestHandler(BaseHTTPRequestHandler):
         # 当get请求时返回当前最新订单信息
         acquire_path = self.path
         response_type = ''
-        for atype in message_tpye:
+        for atype in message_type:
             if acquire_path == atype[0]:
                 response_type = atype[1]
                 break
@@ -56,17 +60,18 @@ class TaxiHttpServerRequestHandler(BaseHTTPRequestHandler):
             self.send_response(200)
             self.send_header('Content-type', response_type)
             self.end_headers()
-            if acquire_path == '/':
-                with open('.' + acquire_path + '/information.json', 'r') as f:
-                    data_taxi = f.read()
-                    content = '<!DOCTYPE html><html lang="en"><head><meta charset="UTF-a8"><title>Xian Jiao Tong ' \
-                              'pioneer taxi Service</title>' \
-                              '</head><body>hello</body></html>'
-                    data_content = content.replace('hello', json2html.convert(data_taxi))
-                    self.wfile.write(bytes(data_content, 'UTF-8'))
-            elif acquire_path == '/favicon.ico' or acquire_path == '/information.json':
+            if acquire_path == '/' or acquire_path == '/?':
+                data_taxi = json.dumps(freshJson)
+                content = '<!DOCTYPE html><html lang="en"><head><meta charset="UTF-a8"><title>Xian Jiao Tong ' \
+                          'pioneer taxi Service</title>' \
+                          '</head><body>hello</body></html>'
+                data_content = content.replace('hello', json2html.convert(data_taxi))
+                self.wfile.write(bytes(data_content, 'UTF-8'))
+            elif acquire_path == '/favicon.ico':
                 with open('.' + acquire_path, 'rb') as f:
                     self.wfile.write(f.read())
+            elif acquire_path == '/information.json':
+                self.wfile.write(json.dumps(freshJson))
         except IOError:
             self.send_error(404, ' File Not Found: %s' % acquire_path)
 
@@ -86,19 +91,14 @@ class TaxiHttpServerRequestHandler(BaseHTTPRequestHandler):
             self.send_error(403, 'json sent is not in right format!')
         try:
             if sender:
-                with open(path.realpath(cur_dir + '/information.json'), 'r+') as f:
-                    data_taxi = json.load(f)
-                    f.seek(0)
-                    f.truncate()
-                    data_taxi.update(trim_dict)
-                    json.dump(data_taxi, f, sort_keys=True)
-                    logging.info("Update a Post from %s", sender)
-                    self.send_response(200)
-                    self.send_header('Content-type', 'text/html')
-                    self.end_headers()
-                    self.wfile.write(bytes(json.dumps(data_taxi), 'UTF-8'))
-        except IOError:
-            self.send_error(500, 'cannot access to json File ')
+                dataLock.acquire()
+                freshJson.update(trim_dict)
+                dataLock.release()
+                logging.info("Update a Post from %s", sender)
+                self.send_response(200)
+                self.send_header('Content-type', 'text/html')
+                self.end_headers()
+                self.wfile.write(bytes(json.dumps(freshJson), 'UTF-8'))
         except Exception:
             self.send_error(500, 'server wrong ')
 
@@ -139,13 +139,20 @@ def check_sender(send_in_dict):
         return 'user', send_in_dict
     raise Exception
 
+    # multiThread part
+
+
+class ThreadingHttpServer(ThreadingMixIn, HTTPServer):
+    pass
+
 
 def run(server_class=TaxiHttpServerRequestHandler, server_address='', port=8000):
     # log configured
     logging.basicConfig(level=logging.INFO)
     # server
     server_address = (server_address, port)
-    httpd = HTTPServer(server_address, server_class)
+    httpd = ThreadingHttpServer(server_address, server_class)
+    # httpd = HTTPServer(server_address, server_class)
     logging.info("starting httpServer on %s  ...", server_address)
     try:
         httpd.serve_forever()
