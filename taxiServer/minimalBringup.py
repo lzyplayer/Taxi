@@ -60,7 +60,7 @@ class TaxiHttpServerRequestHandler(BaseHTTPRequestHandler):
             self.send_header('Content-type', response_type)
             self.end_headers()
             if acquire_path == '/' or acquire_path == '/?':
-                data_taxi = json.dumps(freshJson)
+                data_taxi = json.dumps(freshJson,sort_keys=True)
                 content = '<!DOCTYPE html><html lang="en"><head><meta charset="UTF-a8"><title>Xian Jiao Tong ' \
                           'pioneer taxi Service</title>' \
                           '</head><body>hello</body></html>'
